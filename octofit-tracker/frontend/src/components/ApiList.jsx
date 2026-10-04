@@ -1,6 +1,3 @@
-import { useEffect, useState } from 'react'
-import { API_BASE_URL, getRecords } from '../api.js'
-
 function displayValue(value) {
   if (value === null || value === undefined || value === '') {
     return '—'
@@ -17,35 +14,7 @@ function displayValue(value) {
   return String(value)
 }
 
-function ApiList({ title, endpoint, columns }) {
-  const [result, setResult] = useState({ status: 'loading', records: [], error: '' })
-
-  useEffect(() => {
-    const controller = new AbortController()
-
-    async function loadRecords() {
-      try {
-        const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-          signal: controller.signal,
-        })
-
-        if (!response.ok) {
-          throw new Error(`Request failed with status ${response.status}.`)
-        }
-
-        const records = getRecords(await response.json())
-        setResult({ status: 'success', records, error: '' })
-      } catch (error) {
-        if (error.name !== 'AbortError') {
-          setResult({ status: 'error', records: [], error: error.message })
-        }
-      }
-    }
-
-    loadRecords()
-    return () => controller.abort()
-  }, [endpoint])
-
+function ApiList({ title, columns, result }) {
   return (
     <section aria-labelledby={`${title.toLowerCase()}-heading`}>
       <div className="d-flex align-items-center justify-content-between mb-3">

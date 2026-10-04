@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+import { API_BASE_URL, getRecords } from '../api.js'
 import ApiList from './ApiList.jsx'
 
 const columns = [
@@ -10,7 +12,31 @@ const columns = [
 ]
 
 function Activities() {
-  return <ApiList title="Activities" endpoint="/api/activities/" columns={columns} />
+  const [result, setResult] = useState({ status: 'loading', records: [], error: '' })
+
+  useEffect(() => {
+    const controller = new AbortController()
+
+    fetch(`${API_BASE_URL}/api/activities/`, { signal: controller.signal })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Request failed with status ${response.status}.`)
+        }
+        return response.json()
+      })
+      .then((payload) => {
+        setResult({ status: 'success', records: getRecords(payload), error: '' })
+      })
+      .catch((error) => {
+        if (error.name !== 'AbortError') {
+          setResult({ status: 'error', records: [], error: error.message })
+        }
+      })
+
+    return () => controller.abort()
+  }, [])
+
+  return <ApiList title="Activities" columns={columns} result={result} />
 }
 
 export default Activities
