@@ -1,16 +1,31 @@
-# React + Vite
+# OctoFit Tracker frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The React 19 presentation tier is served by Vite on port 5173 and calls the API
+on port 8000.
 
-Currently, two official plugins are available:
+## API host configuration
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+When running the API in GitHub Codespaces, define `VITE_CODESPACE_NAME` in
+`.env.local` at the frontend project root. Its value must be your Codespace
+name, without a protocol or domain:
 
-## React Compiler
+```dotenv
+VITE_CODESPACE_NAME=your-codespace-name
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Vite uses this value to call
+`https://${VITE_CODESPACE_NAME}-8000.app.github.dev`. Restart the Vite server
+after changing `.env.local`, because Vite reads environment variables at
+startup.
 
-## Expanding the ESLint configuration
+For local development, `VITE_CODESPACE_NAME` may be left unset; the frontend
+then uses `http://localhost:8000` as a safe API fallback.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Run locally
+
+Install dependencies and start the Vite development server:
+
+```bash
+npm install
+npm run dev
+```
